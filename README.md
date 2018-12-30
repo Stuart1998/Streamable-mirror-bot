@@ -19,6 +19,7 @@ A bot for Reddit that mirror videos from posts of specified domains to Streamabl
   - Open `config.py` with a text editor and add the required credentials.
   - Save it.
   - Run `bot.py` (double click or open the command line/terminal in the file directory and type *python3 bot.py*).
+  
 **Note**: Videos that are over 10 minutes will not be mirrored.
 ## License
   [The MIT License](https://opensource.org/licenses/MIT)
