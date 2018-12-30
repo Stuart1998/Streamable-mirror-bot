@@ -1,7 +1,6 @@
 """Bot's constants."""
 
 UPLOAD = 'https://api.streamable.com/import?url={url}'
-RETREIVE = 'https://api.streamable.com/videos/{shortcode}'
 VIDEO_URL = 'https://streamable.com/{shortcode}'
 HEADERS = {'User-Agent': 'Streamable mirroring reddit bot'}
 REPLY_MESSAGE = ('Streamable mirror: {link}\n\n'
