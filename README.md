@@ -11,7 +11,8 @@ A bot for Reddit that mirror videos from posts of specified domains to Streamabl
     - go to https://www.reddit.com/prefs/apps/ and click `are you a developer? create an app...` or `create another app...`
     - name your app, select script and put a redirect uri (http://localhost:8080 will work) and click `create app` https://i.imgur.com/6L8YNiJ.png
     - now you have a reddit client id (under personal use script) and a reddit client secret. https://i.imgur.com/lQdqav0.png
-  - Download the following file and place them in the same folder:
+  - [Create a Streamable account](https://streamable.com/signup) and verify the email.
+  - Download the following files and place them in the same folder:
     - bot.py
     - const.py
     - config.py
