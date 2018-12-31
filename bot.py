@@ -54,7 +54,7 @@ def main():
 				if link is None:
 					logger.info(LOG_MSG.format(shortlink, 'VIDEO OVER 10 MIN'))
 					continue
-				reply = REPLY_MESSAGE.format(link=link, sub_name=SUBREDDIT_NAME)
+				reply = REPLY_MESSAGE.format(link=link)
 				submission.reply(reply)
 				logger.info(LOG_MSG.format(shortlink, link))
 			except ValueError:
