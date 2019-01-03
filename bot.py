@@ -3,7 +3,6 @@ A reddit bot that mirror videos from posts of specified domains
 to Streamable and replies with the link."""
 import logging
 import time
-import sys
 
 import praw
 import prawcore
@@ -74,14 +73,6 @@ def main():
 
 
 if __name__ == '__main__':
-	try:
-		with open(REPLY_MESSAGE_FILE) as f:
-			REPLY_MESSAGE = f.read().strip()
-			if not REPLY_MESSAGE:
-				raise ValueError
-	except (FileNotFoundError, ValueError):
-		input('"{}" not found or empty.'.format(REPLY_MESSAGE_FILE))
-		sys.exit()
 	LOG_MSG = 'submission: {} mirror: {}'
 	LOG_FILE = 'logs.log'
 	logger = logging.getLogger(__name__)
@@ -91,6 +82,10 @@ if __name__ == '__main__':
 	file_handler.setFormatter(formatter)
 	logger.addHandler(file_handler)
 	try:
+		with open(REPLY_MESSAGE_FILE) as f:
+			REPLY_MESSAGE = f.read().strip()
+			if not REPLY_MESSAGE:
+				raise EOFError
 		reddit = praw.Reddit(client_id=CLIENT_ID,
 						 client_secret=CLIENT_SECRET,
 						 user_agent=USER_AGENT,
@@ -98,6 +93,8 @@ if __name__ == '__main__':
 						 password=PASSWORD)
 		subreddit = reddit.subreddit(SUBREDDIT_NAME)
 		main()
+	except (FileNotFoundError, EOFError):
+		input('"{}" not found or empty.'.format(REPLY_MESSAGE_FILE))
 	except Exception:
 		logger.exception('Unexpected error\n')
 		input('The bot has stopped due to an error, check "{}".'.format(LOG_FILE))
