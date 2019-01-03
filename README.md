@@ -3,7 +3,7 @@ A bot for Reddit that mirror videos from posts of specified domains to Streamabl
 ## Requirements:
 - [Python](https://www.python.org/) 3+
 - Third party libraries:
-  - [PRAW](https://praw.readthedocs.io/en/latest/getting_started/installation.html) (*pip install praw*)
+  - [PRAW](https://praw.readthedocs.io/en/latest/getting_started/installation.html) 6+ (*pip install praw*)
   - [Requests](http://docs.python-requests.org/en/master/) (*pip install requests*)
 ## How to run:
   After installing the requirements:
@@ -20,8 +20,9 @@ A bot for Reddit that mirror videos from posts of specified domains to Streamabl
   - Save it.
   - Run `bot.py` (double click or open the command line/terminal in the file directory and type *python3 bot.py*).
   
-**Note**: Videos that are over 10 minutes will not be mirrored.
+**Note**: 
+  - Videos that are over 10 minutes will not be mirrored.
 ## Version
-  0.0.1
+  - 0.0.1 (30/12/2018)
 ## License
   [The MIT License](https://opensource.org/licenses/MIT)
