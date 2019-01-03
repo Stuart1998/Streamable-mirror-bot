@@ -18,7 +18,6 @@ This branch is specif use case for r/soccer, the bot will listen to comments mad
     - `bot.py`
     - `const.py`
     - `config.py`
-    - `reply message.txt`
   - Open `config.py` with a text editor and add the required credentials.
   - Save it.
   - Run `bot.py` (double click or open the command line/terminal in the file directory and type *python3 bot.py*).
