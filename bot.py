@@ -3,12 +3,14 @@ A reddit bot that mirror videos from posts of specified domains
 to Streamable and replies with the link."""
 import logging
 import time
+import sys
 
 import praw
+import prawcore
 import requests
 
-from const import *
 from config import *
+from const import *
 
 
 def mirror_url(url):
@@ -38,14 +40,18 @@ def mirror_url(url):
 		raise ValueError('Invalid URL.')
 
 
+def check_permissions():
+	mod = subreddit.moderator(reddit.user.me())
+	if (STICKY_COMMENT and 
+			(not mod or not any(perm in mod[0].mod_permissions 
+								for perm in ['posts', 'all']))):
+		print('WARNING: To sticky the reply comment, the bot must be a '
+			  'moderator on the subreddit and have posts permissions.\n')
+
+
 def main():
+	check_permissions()
 	print(' Running...', end='\r')
-	reddit = praw.Reddit(client_id=CLIENT_ID,
-						 client_secret=CLIENT_SECRET,
-						 user_agent=USER_AGENT,
-						 username=USERNAME,
-						 password=PASSWORD)
-	subreddit = reddit.subreddit(SUBREDDIT_NAME)
 	for submission in subreddit.stream.submissions(skip_existing=True):
 		shortlink = submission.shortlink
 		if submission.domain in DOMAINS:
@@ -54,16 +60,30 @@ def main():
 				if link is None:
 					logger.info(LOG_MSG.format(shortlink, 'VIDEO OVER 10 MIN'))
 					continue
-				reply = REPLY_MESSAGE.format(link=link)
-				submission.reply(reply)
+				reply = REPLY_MESSAGE.replace('{link}', link)
+				comment = submission.reply(reply)
 				logger.info(LOG_MSG.format(shortlink, link))
+				if STICKY_COMMENT:
+					comment.mod.distinguish(how='yes', sticky=True)
 			except ValueError:
 				logger.info(LOG_MSG.format(shortlink, 'INVALID LINK'))
 			except requests.exceptions.Timeout:
 				logger.exception(LOG_MSG.format(shortlink, 'TIMEOUT\n'))
+			except prawcore.exceptions.Forbidden:
+				logging.error('Unable to sticky comment, permisson not granted.')
 
 
 if __name__ == '__main__':
+	try:
+		with open(REPLY_MESSAGE_FILE) as f:
+			REPLY_MESSAGE = f.read().strip()
+			if not REPLY_MESSAGE:
+				raise ValueError
+	except (FileNotFoundError, ValueError):
+		input('"{}" not found or empty.'.format(REPLY_MESSAGE_FILE))
+		sys.exit()
+	LOG_MSG = 'submission: {} mirror: {}'
+	LOG_FILE = 'logs.log'
 	logger = logging.getLogger(__name__)
 	logger.setLevel(logging.DEBUG)
 	formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
@@ -71,6 +91,12 @@ if __name__ == '__main__':
 	file_handler.setFormatter(formatter)
 	logger.addHandler(file_handler)
 	try:
+		reddit = praw.Reddit(client_id=CLIENT_ID,
+						 client_secret=CLIENT_SECRET,
+						 user_agent=USER_AGENT,
+						 username=USERNAME,
+						 password=PASSWORD)
+		subreddit = reddit.subreddit(SUBREDDIT_NAME)
 		main()
 	except Exception:
 		logger.exception('Unexpected error\n')
