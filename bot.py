@@ -1,15 +1,11 @@
-"""Reddit Streamavble mirroring bot.
-A reddit bot that mirror videos from posts of specified domains
-to Streamable and replies with the link."""
 import logging
 import time
 
 import praw
-import prawcore
 import requests
 
-from config import *
 from const import *
+from config import *
 
 
 def mirror_url(url):
@@ -29,8 +25,8 @@ def mirror_url(url):
 				 	 auth=(STREAMABLE_EMAIL, STREAMABLE_PASSWORD))
 	if r.status_code == 200:
 		video_link = VIDEO_URL.format(shortcode=r.json()['shortcode'])
-		time.sleep(2)
-		r = requests.head(video_link)
+		time.sleep(5)
+		r = requests.head(video_link, timeout=TIMEOUT)
 		if r.status_code == 200:
 			return video_link
 		elif r.status_code == 404:
@@ -39,42 +35,37 @@ def mirror_url(url):
 		raise ValueError('Invalid URL.')
 
 
-def check_permissions():
-	mod = subreddit.moderator(reddit.user.me())
-	if (STICKY_COMMENT and 
-			(not mod or not any(perm in mod[0].mod_permissions 
-								for perm in ['posts', 'all']))):
-		print('WARNING: To sticky the reply comment, the bot must be a '
-			  'moderator on the subreddit and have posts permissions.\n')
-
-
 def main():
-	check_permissions()
 	print(' Running...', end='\r')
-	for submission in subreddit.stream.submissions(skip_existing=True):
+	reddit = praw.Reddit(client_id=CLIENT_ID,
+						 client_secret=CLIENT_SECRET,
+						 user_agent=USER_AGENT,
+						 username=USERNAME,
+						 password=PASSWORD)
+	subreddit = reddit.subreddit(SUBREDDIT_NAME)
+	for comment in subreddit.stream.comments(skip_existing=True, pause_after=0):
+		if (comment is None or 
+				comment.author != COMMENT_AUTHOR or
+				COMMENT_KEYWORD not in comment.body):
+			continue
+		submission = comment.submission
 		shortlink = submission.shortlink
-		if submission.domain in DOMAINS:
+		if not ONLY_SPECIFIED_DOMAINS or submission.domain in DOMAINS:
 			try:
 				link = mirror_url(submission.url)
 				if link is None:
-					logger.info(LOG_MSG.format(shortlink, 'VIDEO OVER 10 MIN'))
+					logger.info(LOG_MSG.format(shortlink, 'VIDEO OVER 10 MIN or COULD NOT PROCESS FILE'))
 					continue
-				reply = REPLY_MESSAGE.replace('{link}', link)
-				comment = submission.reply(reply)
+				reply = REPLY_MESSAGE.format(link=link)
+				comment.reply(reply)
 				logger.info(LOG_MSG.format(shortlink, link))
-				if STICKY_COMMENT:
-					comment.mod.distinguish(how='yes', sticky=True)
 			except ValueError:
 				logger.info(LOG_MSG.format(shortlink, 'INVALID LINK'))
 			except requests.exceptions.Timeout:
 				logger.exception(LOG_MSG.format(shortlink, 'TIMEOUT\n'))
-			except prawcore.exceptions.Forbidden:
-				logging.error('Unable to sticky comment, permisson not granted.')
 
 
 if __name__ == '__main__':
-	LOG_MSG = 'submission: {} mirror: {}'
-	LOG_FILE = 'logs.log'
 	logger = logging.getLogger(__name__)
 	logger.setLevel(logging.DEBUG)
 	formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
@@ -82,19 +73,7 @@ if __name__ == '__main__':
 	file_handler.setFormatter(formatter)
 	logger.addHandler(file_handler)
 	try:
-		with open(REPLY_MESSAGE_FILE) as f:
-			REPLY_MESSAGE = f.read().strip()
-			if not REPLY_MESSAGE:
-				raise EOFError
-		reddit = praw.Reddit(client_id=CLIENT_ID,
-						 client_secret=CLIENT_SECRET,
-						 user_agent=USER_AGENT,
-						 username=USERNAME,
-						 password=PASSWORD)
-		subreddit = reddit.subreddit(SUBREDDIT_NAME)
 		main()
-	except (FileNotFoundError, EOFError):
-		input('"{}" not found or empty.'.format(REPLY_MESSAGE_FILE))
 	except Exception:
 		logger.exception('Unexpected error\n')
 		input('The bot has stopped due to an error, check "{}".'.format(LOG_FILE))
