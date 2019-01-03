@@ -13,9 +13,10 @@ A bot for Reddit that mirror videos from posts of specified domains to Streamabl
     - now you have a reddit client id (under personal use script) and a reddit client secret. https://i.imgur.com/lQdqav0.png
   - [Create a Streamable account](https://streamable.com/signup) and verify the email.
   - Download the following files and place them in the same folder:
-    - bot.py
-    - const.py
-    - config.py
+    - `bot.py`
+    - `const.py`
+    - `config.py`
+    - `reply message.txt`
   - Open `config.py` with a text editor and add the required credentials.
   - Save it.
   - Run `bot.py` (double click or open the command line/terminal in the file directory and type *python3 bot.py*).
