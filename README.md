@@ -25,8 +25,9 @@ A bot for Reddit that mirror videos from posts of specified domains to Streamabl
   - The reply message can be edited in `reply message.txt`.
   - Videos that are over 10 minutes will not be mirrored.
 ## Version:
-  0.0.2 (03/01/2019):
+  - 0.0.2 (03/01/2019):
     - Added an option to make the comment stickied (requires mod and posts permission).
     - Added `reply message.txt` to make editing the reply message easier.
+  - 0.0.1 (30/12/2018) 
 ## License
   [The MIT License](https://opensource.org/licenses/MIT)
