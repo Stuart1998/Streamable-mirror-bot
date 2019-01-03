@@ -13,6 +13,10 @@ PASSWORD = ''
 
 SUBREDDIT_NAME = 'soccer'  # Without the prefix "r/".
 
+STICKY_COMMENT = False  # True or False.
+
+REPLY_MESSAGE_FILE = 'reply message.txt'
+
 DOMAINS = [
 	'twitter.com',
 	'instagram.com',
