@@ -22,7 +22,7 @@ A bot for Reddit that mirror videos from posts of specified domains to Streamabl
   
 **Note**: 
   - Videos that are over 10 minutes will not be mirrored.
-## Version
+## Versions:
   - 0.0.1 (30/12/2018)
 ## License
   [The MIT License](https://opensource.org/licenses/MIT)
