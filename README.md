@@ -1,5 +1,7 @@
 # Streamable-mirror-bot
 A bot for Reddit that mirror videos from posts of specified domains to Streamable and replies with the link.
+
+This branch is specif use case for r/soccer, the bot will listen to comments made on the subreddit and will mirror video in posts that the AutoModerator replied to with a specific keyword, it will then reply to that comment with the link to the mirror.
 ## Requirements:
 - [Python](https://www.python.org/) 3+
 - Third party libraries:
@@ -21,14 +23,7 @@ A bot for Reddit that mirror videos from posts of specified domains to Streamabl
   - Save it.
   - Run `bot.py` (double click or open the command line/terminal in the file directory and type *python3 bot.py*).
   
-**Notes**: 
-  - If STICKY_COMMENT is set to `True` (line 16), the bot need to be a moderator on the subreddit and have posts permission.
-  - The reply message can be edited in `reply message.txt`.
-  - Videos that are over 10 minutes will not be mirrored.
-## Versions:
-  - 0.0.2 (03/01/2019):
-    - Added an option (STICKY_COMMENT in `config.py`) to make the comment stickied (requires mod and posts permission).
-    - Added `reply message.txt` to make editing the reply message easier.
-  - 0.0.1 (30/12/2018) 
+**Notes**:
+  - Videos that are over 10 minutes will not be mirrored. 
 ## License
   [The MIT License](https://opensource.org/licenses/MIT)
