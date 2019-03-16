@@ -48,6 +48,14 @@ def check_permissions():
 			  'moderator on the subreddit and have posts permissions.\n')
 
 
+def video_url(url, domain):
+	if domain == 'v.redd.it':
+		 r = requests.post('https://vredd.it/ajax_process.php',
+		 				   data={'url': url})
+		 return 'https://vredd.it/files/{}.mp4'.format(url[18:])
+	return url
+
+
 def main():
 	check_permissions()
 	print(' Running...', end='\r')
@@ -55,7 +63,7 @@ def main():
 		shortlink = submission.shortlink
 		if submission.domain in DOMAINS:
 			try:
-				link = mirror_url(submission.url)
+				link = mirror_url(video_url(submission.url, submission.domain))
 				if link is None:
 					logger.info(LOG_MSG.format(shortlink, 'VIDEO OVER 10 MIN'))
 					continue
