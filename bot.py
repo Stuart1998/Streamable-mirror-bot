@@ -106,3 +106,4 @@ if __name__ == '__main__':
 	except Exception:
 		logger.exception('Unexpected error\n')
 		input('The bot has stopped due to an error, check "{}".'.format(LOG_FILE))
+		
